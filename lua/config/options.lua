@@ -19,3 +19,9 @@ local ok, reason = require("config.lsp-watch").setup()
 if not ok then
   vim.notify("lsp-watch: using stock watcher (" .. reason .. ")", vim.log.levels.WARN)
 end
+
+-- Over SSH, route yanks to the local terminal's clipboard via OSC 52.
+if vim.env.SSH_CONNECTION then
+  vim.g.clipboard = "osc52"
+  vim.opt.clipboard = "unnamedplus"
+end
