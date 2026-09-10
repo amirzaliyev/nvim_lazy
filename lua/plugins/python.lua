@@ -120,6 +120,12 @@ return {
       servers = {
         basedpyright = {
           root_dir = root_dir("basedpyright"),
+          -- Node's default heap limit (4288MB on this machine) is too small for
+          -- a torch + transformers dependency chain: the type cache alone runs
+          -- 3.1-3.4GB, and at 90% of the limit pyright silently empties the
+          -- whole cache and rebuilds it (~15s on the main thread). More heap
+          -- also means fewer GC passes, which were costing ~a core on top.
+          cmd_env = { NODE_OPTIONS = "--max-old-space-size=6144" },
           capabilities = {
             workspace = {
               didChangeWatchedFiles = {
